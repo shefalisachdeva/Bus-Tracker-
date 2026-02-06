@@ -1,43 +1,25 @@
-import { useEffect, useState } from "react";
-import BusIdForm from "./components/BusIdForm";
+import { useState } from "react";
+import Login from "./pages/Login";
+import AdminDashboard from "./pages/AdminDashboard";
+import DriverDashboard from "./pages/DriverDashboard";
 import Dashboard from "./components/Dashboard";
 
 function App() {
-  const [busId, setBusId] = useState(null);
+  const [role, setRole] = useState(null);
 
-  // Load Bus ID when app starts
-  useEffect(() => {
-    const savedBusId = localStorage.getItem("busId");
-    if (savedBusId) {
-      setBusId(savedBusId);
-    }
-  }, []);
+  if (!role) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-100">
+        <Login onLogin={setRole} />
+      </div>
+    );
+  }
 
-  // Save Bus ID
-  const handleBusSubmit = (id) => {
-    if (!id) return;
-    localStorage.setItem("busId", id);
-    setBusId(id);
-  };
+  if (role === "admin") return <AdminDashboard />;
+  if (role === "driver") return <DriverDashboard />;
 
-  // Change Bus
-  const handleChangeBus = () => {
-    localStorage.removeItem("busId");
-    setBusId(null);
-  };
-
-  return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      {!busId ? (
-        <BusIdForm onSubmit={handleBusSubmit} />
-      ) : (
-        <Dashboard
-          busId={busId}
-          onChangeBus={handleChangeBus}
-        />
-      )}
-    </div>
-  );
+  // default = student
+  return <Dashboard busId="BUS_07" onChangeBus={() => {}} />;
 }
 
 export default App;
